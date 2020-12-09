@@ -1,7 +1,8 @@
 package com.yurwar.utils;
 
-import com.yurwar.files.AbstractFileReader;
-import com.yurwar.files.DefaultFileReader;
+import com.yurwar.files.reader.AbstractPasswordsReader;
+import com.yurwar.files.reader.DefaultPasswordsReader;
+import com.yurwar.files.reader.PasswordReader;
 
 import java.util.List;
 import java.util.Map;
@@ -16,9 +17,9 @@ public final class GeneratorUtils {
     public static final Map<String, String> NUM_TO_UPPERCASE_SYMBOL = createNumToUppercaseSymbol();
     public static final String DELIMITERS = "-_.";
     public static final String OTHER_SYMBOLS = ";:?*=,";
-    private static final AbstractFileReader<String> defaultFileReader = new DefaultFileReader();
+    private static final PasswordReader<String> defaultFileReader = new DefaultPasswordsReader();
     public static final List<String> TOP_25_PASSWORDS =
-            defaultFileReader.readPasswordsFromFile("./src/main/resources/top25_passwords.csv");
+            defaultFileReader.readPasswordsFromFile("top25_passwords.csv");
 
     private static Map<String, String> createNumToUppercaseSymbol() {
         return IntStream.range(0, 10)
