@@ -1,10 +1,11 @@
 package com.yurwar;
 
-/**
- * Hello world!
- */
+import com.yurwar.generator.DefaultPasswordGenerator;
+import com.yurwar.generator.PasswordGenerator;
+
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        PasswordGenerator generator = new DefaultPasswordGenerator();
+        generator.generate();
     }
 }
