@@ -19,6 +19,8 @@ public final class GeneratorUtils {
             defaultFileReader.readPasswordsFromFile("top25_passwords.csv");
     public static final List<String> TOP_100K_PASSWORDS =
             defaultFileReader.readPasswordsFromFile("top100k_passwords.csv");
+    public static final List<String> WORD_DICTIONARY =
+            defaultFileReader.readPasswordsFromFile("word_dictionary.csv");
 
     private GeneratorUtils() {}
 

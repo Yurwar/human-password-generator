@@ -9,9 +9,9 @@ import com.yurwar.hash.Sha1HashingStrategy;
 import com.yurwar.utils.GeneratorUtils;
 import com.yurwar.utils.MutationUtils;
 
+import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
 import java.util.Random;
@@ -50,7 +50,9 @@ public class DefaultPasswordGenerator implements PasswordGenerator {
     private List<String> generateInternal() {
 
         return Stream.of(generateFromBestN(GeneratorUtils.TOP_25_PASSWORDS, TOP_25_PASSWORDS_PERCENTAGE),
-                generateFromBestN(GeneratorUtils.TOP_100K_PASSWORDS, TOP_100K_PASSWORDS_PERCENTAGE))
+                generateFromBestN(GeneratorUtils.TOP_100K_PASSWORDS, TOP_100K_PASSWORDS_PERCENTAGE),
+                generateRestPasswords((int) (AMOUNT_OF_PASSWORDS * REST_PASSWORDS)),
+                generateReallyRandomPasswords((int) (AMOUNT_OF_PASSWORDS * RANDOM_PASSWORD_PERCENTAGE)))
 
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -66,7 +68,8 @@ public class DefaultPasswordGenerator implements PasswordGenerator {
 
     private List<String> generateMutatedPasswords(final List<String> passwords, final double percentage) {
 
-        return IntStream.range(BigInteger.ZERO.intValue(), (int) (((AMOUNT_OF_PASSWORDS * percentage) / passwords.size()) - 1))
+        return IntStream
+                .range(BigInteger.ZERO.intValue(), (int) (((AMOUNT_OF_PASSWORDS * percentage) / passwords.size()) - 1))
                 .mapToObj(index -> mutatePasswords(passwords))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
@@ -75,6 +78,16 @@ public class DefaultPasswordGenerator implements PasswordGenerator {
     private List<String> mutatePasswords(final List<String> passwords) {
 
         return passwords.stream()
+                .map(MutationUtils::mutatePassword)
+                .collect(Collectors.toList());
+    }
+
+    private List<String> generateRestPasswords(int size) {
+        return random.ints(size, 1, 3)
+                .mapToObj(wordsAmount -> IntStream.range(0, wordsAmount)
+                        .mapToObj(i -> GeneratorUtils.WORD_DICTIONARY
+                                .get(random.nextInt(GeneratorUtils.WORD_DICTIONARY.size())))
+                        .collect(Collectors.joining(getRandomCharFromArray(GeneratorUtils.DELIMITERS.split("")))))
                 .map(MutationUtils::mutatePassword)
                 .collect(Collectors.toList());
     }
@@ -94,15 +107,13 @@ public class DefaultPasswordGenerator implements PasswordGenerator {
             for (int j = 0; j < length; j++) {
                 String charToAppend;
                 if (random.nextDouble() <= symbolAppearPercentage) {
-                    final int symbolIndex = random.nextInt(symbols.length);
-                    charToAppend = symbols[symbolIndex];
+                    charToAppend = getRandomCharFromArray(symbols);
                 } else {
                     if (j % 2 == 0) {
-                        final int consonantIndex = random.nextInt(GeneratorUtils.CONSONANTS.length());
-                        charToAppend = GeneratorUtils.CONSONANTS.split("")[consonantIndex];
+                        charToAppend = getRandomCharFromArray(GeneratorUtils.CONSONANTS.split(""));
                     } else {
-                        final int vowelIndex = random.nextInt(GeneratorUtils.VOWELS.length());
-                        charToAppend = GeneratorUtils.VOWELS.split("")[vowelIndex];
+                        charToAppend =
+                                getRandomCharFromArray(GeneratorUtils.VOWELS.split(""));
                     }
                 }
                 if (random.nextDouble() <= uppercasePercentage) {
@@ -113,5 +124,10 @@ public class DefaultPasswordGenerator implements PasswordGenerator {
             passwords.add(strBuilder.toString());
         });
         return passwords;
+    }
+
+    private String getRandomCharFromArray(String[] symbols) {
+        final int symbolIndex = random.nextInt(symbols.length);
+        return symbols[symbolIndex];
     }
 }
