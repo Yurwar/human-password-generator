@@ -7,6 +7,9 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 public class Sha1HashingStrategy extends AbstractHashingStrategy {
+
+    private static final String NAME = "salted-sha1";
+
     private static final Random random = new SecureRandom();
     private static final Base16 base16 = new Base16(true);
 
@@ -19,5 +22,11 @@ public class Sha1HashingStrategy extends AbstractHashingStrategy {
         final String saltedPassword = DigestUtils.sha1Hex(password.concat(salt));
 
         return saltedPassword + "," + salt;
+    }
+
+    @Override
+    public String getName() {
+
+        return NAME;
     }
 }
