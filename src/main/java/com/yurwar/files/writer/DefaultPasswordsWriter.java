@@ -10,6 +10,7 @@ import java.util.List;
 
 public class DefaultPasswordsWriter implements PasswordsWriter<String> {
     private static final String DEFAULT_FILE_PATH = "./src/main/resources/";
+    private static final String DEFAULT_FILE_EXTENSION = ".csv";
 
     @Override
     public void writePasswordsToFile(List<String> passwords, String filename) {
@@ -18,6 +19,7 @@ public class DefaultPasswordsWriter implements PasswordsWriter<String> {
 
     @Override
     public void writePasswordsToFile(List<String> passwords, String pathToFile, String filename) {
+        filename = filename + DEFAULT_FILE_EXTENSION;
         try {
             Files.write(Path.of(pathToFile + filename), passwords, StandardOpenOption.CREATE);
         } catch (IOException e) {

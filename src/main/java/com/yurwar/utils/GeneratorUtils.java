@@ -13,6 +13,7 @@ public final class GeneratorUtils {
     public static final String UPPERCASE_NUM_SYMBOLS = ")!@#$%^&*(";
     public static final String DELIMITERS = "-_.";
     public static final String OTHER_SYMBOLS = ";:?*=,";
+    public static final String NUMBERS = "0123456789";
     private static final PasswordReader<String> defaultFileReader = new DefaultPasswordsReader();
     public static final List<String> TOP_25_PASSWORDS =
             defaultFileReader.readPasswordsFromFile("top25_passwords.csv");
